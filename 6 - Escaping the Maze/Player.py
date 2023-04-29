@@ -6,6 +6,10 @@ class Player:
         self.row = row
         self.object_size = object_size
         self.object_color = (100, 200, 50)
+        self.move_left = False
+        self.move_right = False
+        self.move_up = False
+        self.move_down = False
  
     def draw(self, screen):
         rect = pygame.Rect(self.col * self.object_size, self.row * self.object_size, self.object_size, self.object_size)
@@ -23,5 +27,3 @@ class Player:
                 new_row -= 1
             elif event.key == pygame.K_DOWN:
                 new_row += 1
-
-            

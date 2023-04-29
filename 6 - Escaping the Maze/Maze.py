@@ -121,7 +121,7 @@ class Maze:
         screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption("Maze")
         
-        colors = {"#": (0, 0, 0), " ": (255, 255, 255)}
+        colors = {"#": (0, 0, 0), " ": (255, 255, 255), "$": (255, 0, 0)}
         
         for y in range(len(self.cells)):
             for x in range(len(self.cells[y])):
@@ -147,7 +147,7 @@ class Maze:
                       
             # Verifica se a lista de células tem as dimensões corretas
             if len(cells) != cells_y or len(cells[0]) != cells_x:
-                print(f"startrow: {startrow}, startcol: {startcol}, cells_x: {cells_x}, cells_y: {cells_y}")
+                #print(f"startrow: {startrow}, startcol: {startcol}, cells_x: {cells_x}, cells_y: {cells_y}")
                 raise ValueError("As dimensões da lista de células não correspondem aos valores especificados por cells_x e cells_y.")
 
             # verifica se a posição escolhida está dentro dos limites do labirinto e não é uma parede
@@ -183,3 +183,32 @@ class Maze:
         except Exception as e:
             print(f"Error in random_start_position: {e}")
             self.start = None
+
+    def find_exit_cells(self):
+        queue = []
+        visited = set()
+
+        # Inicializa a fila com as células iniciais
+        for x in range(self.width):
+            for y in range(self.height):
+                if x == 0 or y == 0 or x == self.width - 1 or y == self.height - 1:
+                    queue.append((x, y))
+                    visited.add((x, y))
+
+        
+        # Executa a busca em largura
+        while queue:
+            x, y = queue.pop(0)
+
+            # Verifica se a célula atual é uma saída
+            if self.cells[y][x] == " " and (x == 0 or y == 0 or x == self.width - 1 or y == self.height - 1):
+                # Identifica Células de saída
+                self.cells[y][x] = "$"
+
+            # Adiciona as células vizinhas à fila
+            for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                nx, ny = x + dx, y + dy
+                if (nx, ny) not in visited and 0 <= nx < self.width and 0 <= ny < self.height:
+                    queue.append((nx, ny))
+                    visited.add((nx, ny))
+
